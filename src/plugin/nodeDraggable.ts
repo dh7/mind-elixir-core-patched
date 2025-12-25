@@ -30,8 +30,9 @@ const clearPreview = function (el: Element | null) {
 const canMove = function (el: Element, dragged: Topic[]) {
   for (const node of dragged) {
     const isContain = node.parentElement.parentElement.contains(el)
-    const ok = el && el.tagName === 'ME-TPC' && el !== node && !isContain && (el as Topic).nodeObj.parent
-    if (!ok) return false
+    // Allow dropping onto root (el.nodeObj.parent may be undefined for root)
+    // But still prevent dropping onto non-topic elements or onto the dragged node itself
+    if (!(el && el.tagName === 'ME-TPC' && el !== node && !isContain)) return false
   }
   return true
 }

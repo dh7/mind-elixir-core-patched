@@ -6,6 +6,15 @@ import { createExpander } from './dom'
 
 // Judge new added node L or R
 export const judgeDirection = function ({ map, direction }: MindElixirInstance, obj: NodeObj) {
+  // If the node already has a direction set, respect it
+  // This allows drag-and-drop to move nodes from one side to the other
+  if (obj.direction === LEFT) {
+    return LEFT
+  } else if (obj.direction === RIGHT) {
+    return RIGHT
+  }
+
+  // Otherwise, use the instance direction or auto-balance
   if (direction === LEFT) {
     return LEFT
   } else if (direction === RIGHT) {

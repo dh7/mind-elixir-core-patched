@@ -320,6 +320,12 @@ export const setLocale = function (this: MindElixirInstance, locale: Locale) {
 }
 
 export const expandNode = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
+  // Safety check for missing element or nodeObj
+  if (!el || !el.nodeObj) {
+    console.warn('expandNode: missing nodeObj')
+    return
+  }
+
   const node = el.nodeObj
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand
@@ -337,7 +343,14 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   }
 
   const parent = el.parentNode
-  const expander = parent.children[1]!
+  const expander = parent?.children?.[1]
+
+  // Safety check for missing expander
+  if (!expander) {
+    console.warn('expandNode: missing expand button element')
+    return
+  }
+
   expander.expanded = node.expanded
   expander.className = node.expanded ? 'minus' : ''
 

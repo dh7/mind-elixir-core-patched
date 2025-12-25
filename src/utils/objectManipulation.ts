@@ -58,14 +58,24 @@ export function insertParentNodeObj(obj: NodeObj, newObj: NodeObj) {
 
 export function moveNodeObj(type: 'in' | 'before' | 'after', from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
-  if (!to.parent?.parent) {
+
+  // Handle direction when moving to first level (parent is root or no parent)
+  if (!to.parent) {
+    // Moving INTO root - keep existing direction if set, otherwise it will be auto-balanced
+    // Don't overwrite with undefined!
+  } else if (!to.parent.parent) {
+    // Moving to sibling of first-level node - inherit target's direction
     from.direction = to.direction
   }
+
   if (type === 'in') {
     if (to.children) to.children.push(from)
     else to.children = [from]
   } else {
-    if (from.direction !== undefined) from.direction = to.direction
+    // For before/after moves, inherit target's direction if target is first-level
+    if (to.parent && !to.parent.parent) {
+      from.direction = to.direction
+    }
     const { siblings, index } = getSibling(to)
     if (siblings === undefined) return
     if (type === 'before') {
